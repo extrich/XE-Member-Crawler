@@ -37,7 +37,7 @@ class main_window :
         self.ssh_setting_frame = tk.LabelFrame(self.frame_db, text="SSH터널 설정")
         for i in range(len(self.ssh_setting_names)):
             tk.Label(self.ssh_setting_frame, text=self.ssh_setting_names[i]).grid(row=i, column=0, sticky='W')
-            self.ssh_setting_values.append(tk.Entry(self.ssh_setting_frame))
+            self.ssh_setting_values.append(tk.Entry(self.ssh_setting_frame, state="readonly"))
             self.ssh_setting_values[i].grid(row=i, column=1)
         self.ssh_setting_frame.grid(row=2, sticky='W')
         tk.Button(self.frame_db, text="DB연결 테스트", command=self.db_connect_test).grid(row=3, sticky='W')
@@ -63,9 +63,6 @@ class main_window :
         #메인루프
         self.window.mainloop()
 
-    def select_column(self):
-        print(self.column_values[3].get())
-
     def ssh_tunnel_on(self):
         pass
     def ssh_tunnel_off(self):
@@ -79,7 +76,14 @@ class main_window :
     def db_connect_test(self):
         pass
     def toggle_ssh_tunnel(self):
-        pass
+        print(self.use_ssh_tunnel.get())
+        for entry in self.ssh_setting_values:
+            if self.use_ssh_tunnel.get():
+                entry.configure(state="normal")
+            else :
+                entry.configure(state="readonly")
+    def select_column(self):
+        print(self.column_values[3].get())
         
 
 #메인루프 실행
