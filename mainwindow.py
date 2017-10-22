@@ -44,20 +44,22 @@ class main_window :
         tk.Button(self.frame_db, text="SSH터널 테스트", command=self.ssh_connect_test).grid(row=3, sticky='E')
 
 
-
         #기본필드 탭
         self.column_select_frame = tk.LabelFrame(self.frame_feild, text="결과에 포함시킬 변수")
         for i in range(len(self.column_names)):
             self.column_values.append(tk.BooleanVar())
-            tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.select_column).grid(row=i%12, column=i//12, sticky='W')
+            tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.toggle_extra_vars).grid(row=i%12, column=i//12, sticky='W')
         self.column_select_frame.grid(row=0)
+
+        #확장변수 탭
+        self.
 
 
 
         #노트북탭에 개별 프레임 삽입
         self.notebook_tab.add(self.frame_db, text="DB연결 설정")
         self.notebook_tab.add(self.frame_feild, text="기본변수")
-        self.notebook_tab.add(self.frame_extra, text="확장변수")
+        self.notebook_tab.add(self.frame_extra, text="확장변수", state="disabled")
         self.notebook_tab.pack()
         
         #메인루프
@@ -76,14 +78,18 @@ class main_window :
     def db_connect_test(self):
         pass
     def toggle_ssh_tunnel(self):
-        print(self.use_ssh_tunnel.get())
+        #SSH터널 옵션 토글
         for entry in self.ssh_setting_values:
             if self.use_ssh_tunnel.get():
                 entry.configure(state="normal")
-            else :
+            else:
                 entry.configure(state="readonly")
-    def select_column(self):
-        print(self.column_values[3].get())
+    def toggle_extra_vars(self):
+        #확장변수 탭 토글
+        if self.column_values[22].get():
+            self.notebook_tab.tab(self.frame_extra, state="normal")
+        else:            
+            self.notebook_tab.tab(self.frame_extra, state="disabled")
         
 
 #메인루프 실행
