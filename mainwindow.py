@@ -1,10 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import pymysql
-import sshtunnel
-import time
-import xlsxwriter
-import os
+from tkinter.scrolledtext import ScrolledText
 
 class main_window :
     def __init__(self):
@@ -52,9 +48,8 @@ class main_window :
         self.column_select_frame.grid(row=0)
 
         #확장변수 탭
-        self.
-
-
+        self.extra_vars = ScrolledText(self.frame_extra, undo=True, width=40).pack()
+        #print(self.extra_vars.get('1.0', 'end-1c').splitlines())
 
         #노트북탭에 개별 프레임 삽입
         self.notebook_tab.add(self.frame_db, text="DB연결 설정")
@@ -90,7 +85,6 @@ class main_window :
             self.notebook_tab.tab(self.frame_extra, state="normal")
         else:            
             self.notebook_tab.tab(self.frame_extra, state="disabled")
-        
 
 #메인루프 실행
 main_window()
