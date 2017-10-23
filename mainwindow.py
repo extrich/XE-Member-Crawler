@@ -22,7 +22,7 @@ class MainWindow:
         self.ssh_setting_values = []
 
         #기본필드탭 변수
-        self.column_names = ["member_srl", "user_id", "email_address", "password", "email_id", "email_host", "user_name", "nick_name", "find_account_question", "find_account_answer", "homepage", "blog", "birthday", "allow_mailing", "allow_message", "denied", "limit_date", "regdate", "last_login", "change_password_date", "is_admin", "description", "extra_vars"]
+        self.column_names = ["ID","이메일 주소","이메일 ID","이메일 호스트","이름","닉네임","홈페이지","블로그","생일","메일링가입","메시지허용","가입일자","최종로그인","비밀번호 변경일","설명","확장변수"]
         self.column_values = []
 
         #데이터베이스 탭
@@ -48,8 +48,9 @@ class MainWindow:
         self.column_select_frame = tk.LabelFrame(self.frame_feild, text="결과에 포함시킬 변수")
         for i in range(len(self.column_names)):
             self.column_values.append(tk.BooleanVar())
-            tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.toggle_extra_vars).grid(row=i%12, column=i//12, sticky='W')
+            tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.toggle_extra_vars).grid(row=i%(len(self.column_names)//2), column=i//(len(self.column_names)//2), sticky='W')
         self.column_select_frame.grid(row=0)
+        tk.Button(self.frame_feild, text="sql뱉어내는거 테스트", command=self.sql_return_test).grid(row=1)
 
         #확장변수 탭
         self.extra_vars = ScrolledText(self.frame_extra, undo=True, width=40).pack()
@@ -86,6 +87,14 @@ class MainWindow:
         messagebox.showinfo("DB연결 테스트", "성공" if self.dbconnector.db_connect_test() else "실패")
         self.db_connect_off()
 
+    def sql_return_test(self):
+        self.db_connect_on()
+        print(self.dbconnector.get_group_list(self.db_setting_values[5].get()))
+        print(self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()))
+        print(self.dbconnector.get_all_user_list(self.db_setting_values[5].get()))
+        print(self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), 1))
+        self.db_connect_off()
+
     def toggle_ssh_tunnel(self):
         #SSH터널 옵션 토글
         for entry in self.ssh_setting_values:
@@ -95,7 +104,7 @@ class MainWindow:
                 entry.configure(state="readonly")
     def toggle_extra_vars(self):
         #확장변수 탭 토글
-        if self.column_values[22].get():
+        if self.column_values[-1].get():
             self.notebook_tab.tab(self.frame_extra, state="normal")
         else:
             self.notebook_tab.tab(self.frame_extra, state="disabled")
