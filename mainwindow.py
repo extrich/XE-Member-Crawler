@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 
+import dbconnector
+
 class main_window :
     def __init__(self):
         self.window = tk.Tk()
@@ -9,11 +11,12 @@ class main_window :
         self.frame_db = ttk.Frame(self.notebook_tab) #DB연결설정 탭
         self.frame_feild = ttk.Frame(self.notebook_tab) #기본변수 탭
         self.frame_extra = ttk.Frame(self.notebook_tab) #확장변수 탭
+        self.dbconnector = dbconnector.db_connector()
 
         #DB탭 변수
         self.db_setting_names = ["DB 호스트", "포트번호", "DB 이름", "접두어", "DB 접속ID", "비밀번호"]
         self.db_setting_values = []
-        self.use_ssh_tunnel = tk.BooleanVar();
+        self.use_ssh_tunnel = tk.BooleanVar()
         self.ssh_setting_names = ["SSH 호스트", "포트번호", "SSH 접속ID", "비밀번호", "원격 바인딩주소", "DB 포트번호"]
         self.ssh_setting_values = []
 
@@ -61,11 +64,13 @@ class main_window :
         self.window.mainloop()
 
     def ssh_tunnel_on(self):
-        pass
+        self.dbconnector.ssh_connect(self.ssh_setting_values[0].get(), self.ssh_setting_values[1].get(), self.ssh_setting_values[2].get(), self.ssh_setting_values[3].get(), self.ssh_setting_values[4].get(), self.ssh_setting_values[5].get())
     def ssh_tunnel_off(self):
-        pass
+        self.dbconnector.ssh_disconnect()
     def ssh_connect_test(self):
-        pass
+        self.ssh_tunnel_on()
+        print(self.dbconnector.ssh_connect_test())
+        self.ssh_tunnel_off()
     def db_connect_on(self):
         pass
     def db_connect_off(self):
