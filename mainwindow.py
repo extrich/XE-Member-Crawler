@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter.scrolledtext import ScrolledText
 
 import dbconnector as dbc
+import dataexporter as dtx
 
 class MainWindow:
     def __init__(self):
@@ -13,6 +14,7 @@ class MainWindow:
         self.frame_feild = ttk.Frame(self.notebook_tab) #기본변수 탭
         self.frame_extra = ttk.Frame(self.notebook_tab) #확장변수 탭
         self.dbconnector = dbc.DBConnector()
+        self.dataexporter = dtx.DataExporter()
 
         #DB탭 변수
         self.db_setting_names = ["DB 호스트", "포트번호", "DB 접속ID", "비밀번호", "DB 이름", "접두어"]
@@ -89,10 +91,11 @@ class MainWindow:
 
     def sql_return_test(self):
         self.db_connect_on()
-        print(self.dbconnector.get_group_list(self.db_setting_values[5].get()))
-        print(self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()))
-        print(self.dbconnector.get_all_user_list(self.db_setting_values[5].get()))
-        print(self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), 1))
+        #print(self.dbconnector.get_group_list(self.db_setting_values[5].get()))
+        #print(self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()))
+        #print(self.dbconnector.get_all_user_list(self.db_setting_values[5].get()))
+        #print(self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), 1))
+        print(self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
         self.db_connect_off()
 
     def toggle_ssh_tunnel(self):
