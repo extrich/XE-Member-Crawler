@@ -55,7 +55,9 @@ class MainWindow:
         self.column_select_frame.grid(row=0)
 
         #확장변수 탭
-        self.extra_vars = ScrolledText(self.frame_extra, undo=True, width=40).pack()
+        tk.Label(self.frame_extra, text="출력하지 않을 확장변수").pack()
+        self.ban_list = ScrolledText(self.frame_extra, undo=True, width=40)
+        self.ban_list.pack()
         #print(self.extra_vars.get('1.0', 'end-1c').splitlines())
 
         #내보내기 탭
@@ -106,11 +108,11 @@ class MainWindow:
         self.db_connect_on()
         self.dataexporter.open_xlsx(self.output_file_name.get() + ".xlsx")
         #전체회원 구겨넣기
-        self.dataexporter.insert_xlsx_worksheet("전체회원", self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
+        self.dataexporter.insert_xlsx_worksheet("전체회원", self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.ban_list.get('1.0', 'end-1c').splitlines(), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
         group_list = self.dbconnector.get_group_list(self.db_setting_values[5].get())
         #그룹별로 회원 구겨넣기
         for group in group_list:
-            self.dataexporter.insert_xlsx_worksheet(group[1], self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), group[0])))
+            self.dataexporter.insert_xlsx_worksheet(group[1], self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.ban_list.get('1.0', 'end-1c').splitlines(), self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), group[0])))
         self.dataexporter.close_xlsx()
         self.db_connect_off()
 

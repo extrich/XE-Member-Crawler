@@ -6,7 +6,7 @@ class DataExporter:
     def __init__(self):
         self.xlsx_workbook = None
 
-    def get_aligned_user_list(self, column_names, column_values, extra_vars, user_list):
+    def get_aligned_user_list(self, column_names, column_values, extra_vars, ban_list, user_list):
         result = []
         header = []
 
@@ -17,7 +17,11 @@ class DataExporter:
         #확장필드 머리 삽입
         if column_values[-1].get():
             for i in range(len(extra_vars)):
-                header.append(extra_vars[i][2]) #삽입할 확장변수 여기서 체크
+                #확장변수 밴 리스트에 있으면 아무것도 안함
+                if (extra_vars[i][1] in ban_list) or (extra_vars[i][2] in ban_list):
+                    pass
+                else:
+                    header.append(extra_vars[i][2])
         result.append(header)
 
         #몸통 삽입
@@ -31,12 +35,16 @@ class DataExporter:
             if column_values[-1].get():
                 extra_var = unserialize(user_list[i][-1].encode(), decode_strings=True, object_hook=phpobject)._asdict()
                 for j in range(len(extra_vars)):
-                    #확장필드가 주소 형태라면
-                    if re.match(r'.*zip$', extra_vars[j][0]) is not None:
-                        body.append(extra_var[extra_vars[j][1]][1]+' '+extra_var[extra_vars[j][1]][2]+' '+extra_var[extra_vars[j][1]][4]+' '+extra_var[extra_vars[j][1]][3] if (extra_vars[j][1] in extra_var) else '')
-                    #주소 이외의 다른 형태라면
+                    #확장변수 밴 리스트에 있으면 아무것도 안함
+                    if (extra_vars[j][1] in ban_list) or (extra_vars[j][2] in ban_list):
+                        pass
                     else:
-                        body.append(extra_var[extra_vars[j][1]] if (extra_vars[j][1] in extra_var) else '')
+                        #확장필드가 주소 형태라면
+                        if re.match(r'.*zip$', extra_vars[j][0]) is not None:
+                            body.append(extra_var[extra_vars[j][1]][1]+' '+extra_var[extra_vars[j][1]][2]+' '+extra_var[extra_vars[j][1]][4]+' '+extra_var[extra_vars[j][1]][3] if (extra_vars[j][1] in extra_var) else '')
+                        #주소 이외의 다른 형태라면
+                        else:
+                            body.append(extra_var[extra_vars[j][1]] if (extra_vars[j][1] in extra_var) else '')
             result.append(body)
         
         return result
