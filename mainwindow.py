@@ -13,6 +13,7 @@ class MainWindow:
         self.frame_db = ttk.Frame(self.notebook_tab) #DB연결설정 탭
         self.frame_feild = ttk.Frame(self.notebook_tab) #기본변수 탭
         self.frame_extra = ttk.Frame(self.notebook_tab) #확장변수 탭
+        self.frame_output = ttk.Frame(self.notebook_tab) #내보내기 탭
         self.dbconnector = dbc.DBConnector()
         self.dataexporter = dtx.DataExporter()
 
@@ -52,16 +53,28 @@ class MainWindow:
             self.column_values.append(tk.BooleanVar())
             tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.toggle_extra_vars).grid(row=i%round((len(self.column_names)/2)), column=i//round((len(self.column_names)/2)), sticky='W')
         self.column_select_frame.grid(row=0)
-        tk.Button(self.frame_feild, text="sql뱉어내는거 테스트", command=self.sql_return_test).grid(row=1)
 
         #확장변수 탭
         self.extra_vars = ScrolledText(self.frame_extra, undo=True, width=40).pack()
         #print(self.extra_vars.get('1.0', 'end-1c').splitlines())
 
+        #내보내기 탭
+        self.output_dir_select_frame = tk.LabelFrame(self.frame_output, text="경로설정")
+        tk.Label(self.output_dir_select_frame, text="파일이름").grid(row=0, column=0)
+        self.output_file_name = tk.Entry(self.output_dir_select_frame)
+        self.output_file_name.grid(row=0, column=1)
+        self.output_dir_select_frame.grid(row=0, sticky='W')
+
+        self.output_file_frame = tk.LabelFrame(self.frame_output, text="내보내기")
+        tk.Button(self.output_file_frame, text=".xlsx파일로 내보내기", command=self.output_xlsx).pack()
+        self.output_file_frame.grid(row=1, sticky='W')
+
+
         #노트북탭에 개별 프레임 삽입
         self.notebook_tab.add(self.frame_db, text="DB연결 설정")
         self.notebook_tab.add(self.frame_feild, text="기본변수")
         self.notebook_tab.add(self.frame_extra, text="확장변수", state="disabled")
+        self.notebook_tab.add(self.frame_output, text="내보내기")
         self.notebook_tab.pack()
 
         #메인루프
@@ -89,17 +102,15 @@ class MainWindow:
         messagebox.showinfo("DB연결 테스트", "성공" if self.dbconnector.db_connect_test() else "실패")
         self.db_connect_off()
 
-    def sql_return_test(self):
+    def output_xlsx(self):
         self.db_connect_on()
-        self.dataexporter.open_xlsx("test.xlsx")
+        self.dataexporter.open_xlsx(self.output_file_name.get() + ".xlsx")
+        #전체회원 구겨넣기
         self.dataexporter.insert_xlsx_worksheet("전체회원", self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
         group_list = self.dbconnector.get_group_list(self.db_setting_values[5].get())
+        #그룹별로 회원 구겨넣기
         for group in group_list:
             self.dataexporter.insert_xlsx_worksheet(group[1], self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), group[0])))
-        #print(self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()))
-        #print(self.dbconnector.get_all_user_list(self.db_setting_values[5].get()))
-        #print(self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), 1))
-        #print(self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
         self.dataexporter.close_xlsx()
         self.db_connect_off()
 
