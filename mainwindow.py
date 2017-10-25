@@ -9,6 +9,7 @@ import dataexporter as dtx
 class MainWindow:
     def __init__(self):
         self.window = tk.Tk()
+        self.window.title('XE 회원정보 DB 크롤러')
         self.notebook_tab = ttk.Notebook(self.window)
         self.frame_db = ttk.Frame(self.notebook_tab) #DB연결설정 탭
         self.frame_feild = ttk.Frame(self.notebook_tab) #기본변수 탭
@@ -25,7 +26,7 @@ class MainWindow:
         self.ssh_setting_values = []
 
         #기본필드탭 변수
-        self.column_names = ["ID", "이메일 주소", "이메일 ID", "이메일 호스트", "이름", "닉네임", "홈페이지", "블로그", "생일", "메일링가입", "메시지허용", "관리자", "승인거부", "거부일자", "가입일자", "최종로그인", "비밀번호 변경일", "설명", "확장변수"]
+        self.column_names = ["ID", "이메일 주소", "이메일 ID", "이메일 호스트", "이름", "닉네임", "홈페이지", "블로그", "생일", "메일링가입", "메시지허용", "관리자", "승인거부", "거부일자", "가입일자", "최종로그인", "비밀번호 변경일", "요약", "확장변수"]
         self.column_values = []
 
         #데이터베이스 탭
@@ -58,7 +59,6 @@ class MainWindow:
         tk.Label(self.frame_extra, text="출력하지 않을 확장변수").pack()
         self.ban_list = ScrolledText(self.frame_extra, undo=True, width=40)
         self.ban_list.pack()
-        #print(self.extra_vars.get('1.0', 'end-1c').splitlines())
 
         #내보내기 탭
         self.output_dir_select_frame = tk.LabelFrame(self.frame_output, text="경로설정")

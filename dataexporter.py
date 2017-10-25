@@ -1,6 +1,7 @@
-import xlsxwriter as xlsx
 import re
-from phpserialize import *
+import xlsxwriter as xlsx
+from phpserialize import unserialize
+from phpserialize import phpobject
 
 class DataExporter:
     def __init__(self):
@@ -46,7 +47,7 @@ class DataExporter:
                         else:
                             body.append(extra_var[extra_vars[j][1]] if (extra_vars[j][1] in extra_var) else '')
             result.append(body)
-        
+
         return result
 
     def open_xlsx(self, file_name):
@@ -58,4 +59,3 @@ class DataExporter:
         worksheet = self.xlsx_workbook.add_worksheet(sheet_name)
         for i in range(len(sheet_data)):
             worksheet.write_row(i, 0, sheet_data[i])
-
