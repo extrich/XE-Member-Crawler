@@ -24,7 +24,7 @@ class MainWindow:
         self.ssh_setting_values = []
 
         #기본필드탭 변수
-        self.column_names = ["ID","이메일 주소","이메일 ID","이메일 호스트","이름","닉네임","홈페이지","블로그","생일","메일링가입","메시지허용","가입일자","최종로그인","비밀번호 변경일","설명","확장변수"]
+        self.column_names = ["ID","이메일 주소","이메일 ID","이메일 호스트","이름","닉네임","홈페이지","블로그","생일","메일링가입","메시지허용","관리자","승인거부","거부일자","가입일자","최종로그인","비밀번호 변경일","설명","확장변수"]
         self.column_values = []
 
         #데이터베이스 탭
@@ -50,7 +50,7 @@ class MainWindow:
         self.column_select_frame = tk.LabelFrame(self.frame_feild, text="결과에 포함시킬 변수")
         for i in range(len(self.column_names)):
             self.column_values.append(tk.BooleanVar())
-            tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.toggle_extra_vars).grid(row=i%(len(self.column_names)//2), column=i//(len(self.column_names)//2), sticky='W')
+            tk.Checkbutton(self.column_select_frame, text=self.column_names[i], variable=self.column_values[i], command=self.toggle_extra_vars).grid(row=i%round((len(self.column_names)/2)), column=i//round((len(self.column_names)/2)), sticky='W')
         self.column_select_frame.grid(row=0)
         tk.Button(self.frame_feild, text="sql뱉어내는거 테스트", command=self.sql_return_test).grid(row=1)
 
