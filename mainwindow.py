@@ -24,7 +24,7 @@ class MainWindow:
         self.ssh_setting_values = []
 
         #기본필드탭 변수
-        self.column_names = ["ID","이메일 주소","이메일 ID","이메일 호스트","이름","닉네임","홈페이지","블로그","생일","메일링가입","메시지허용","관리자","승인거부","거부일자","가입일자","최종로그인","비밀번호 변경일","설명","확장변수"]
+        self.column_names = ["ID", "이메일 주소", "이메일 ID", "이메일 호스트", "이름", "닉네임", "홈페이지", "블로그", "생일", "메일링가입", "메시지허용", "관리자", "승인거부", "거부일자", "가입일자", "최종로그인", "비밀번호 변경일", "설명", "확장변수"]
         self.column_values = []
 
         #데이터베이스 탭
@@ -73,7 +73,7 @@ class MainWindow:
         self.dbconnector.ssh_disconnect()
     def ssh_connect_test(self):
         self.ssh_tunnel_on()
-        messagebox.showinfo("SSH터널 연결 테스트", "성공" if self.dbconnector.ssh_connect_test() else "실패") 
+        messagebox.showinfo("SSH터널 연결 테스트", "성공" if self.dbconnector.ssh_connect_test() else "실패")
         self.ssh_tunnel_off()
 
     def db_connect_on(self):
@@ -91,11 +91,16 @@ class MainWindow:
 
     def sql_return_test(self):
         self.db_connect_on()
-        #print(self.dbconnector.get_group_list(self.db_setting_values[5].get()))
+        self.dataexporter.open_xlsx("test.xlsx")
+        self.dataexporter.insert_xlsx_worksheet("전체회원", self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
+        group_list = self.dbconnector.get_group_list(self.db_setting_values[5].get())
+        for group in group_list:
+            self.dataexporter.insert_xlsx_worksheet(group[1], self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), group[0])))
         #print(self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()))
         #print(self.dbconnector.get_all_user_list(self.db_setting_values[5].get()))
         #print(self.dbconnector.get_group_user_list(self.db_setting_values[5].get(), 1))
-        print(self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
+        #print(self.dataexporter.get_aligned_user_list(self.column_names, self.column_values, self.dbconnector.get_extra_vars_list(self.db_setting_values[5].get()), self.dbconnector.get_all_user_list(self.db_setting_values[5].get())))
+        self.dataexporter.close_xlsx()
         self.db_connect_off()
 
     def toggle_ssh_tunnel(self):

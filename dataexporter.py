@@ -5,7 +5,6 @@ from phpserialize import *
 class DataExporter:
     def __init__(self):
         self.xlsx_workbook = None
-        self.xlsx_worksheets = []
 
     def get_aligned_user_list(self, column_names, column_values, extra_vars, user_list):
         result = []
@@ -44,3 +43,11 @@ class DataExporter:
 
     def open_xlsx(self, file_name):
         self.xlsx_workbook = xlsx.Workbook(file_name)
+    def close_xlsx(self):
+        self.xlsx_workbook.close()
+
+    def insert_xlsx_worksheet(self, sheet_name, sheet_data):
+        worksheet = self.xlsx_workbook.add_worksheet(sheet_name)
+        for i in range(len(sheet_data)):
+            worksheet.write_row(i, 0, sheet_data[i])
+
